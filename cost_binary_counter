@@ -1,0 +1,41 @@
+#include<iostream>
+using namespace std;
+
+int main()
+{
+    int size = 3;                  // Size of the binary number (3 bits)
+    int bits[3] = {0};             // Initialize the binary number as 000
+    
+    // Print the initial value of bits (000) and cost (0 flips)
+    for (int j = size - 1; j >= 0; j--) {
+        cout << bits[j];
+    }
+    cout << " | Cost: 0 flips" << endl;
+
+    // Loop for 7 iterations to simulate binary counting from 000 to 111
+    for (int i = 0; i < 7; i++) {
+        int carry = 1;             // Start with a carry of 1 for the increment
+        int cost = 0;              // Initialize cost (bit flips) for this increment
+        
+        // Perform the binary addition
+        for (int j = 0; j < size && carry == 1; j++) {
+            if (bits[j] == 0) {
+                bits[j] = 1;      // Set the current bit to 1
+                carry = 0;        // No further carry
+                cost++;           // Count the flip
+            } else {
+                bits[j] = 0;      // Set the current bit to 0 (since it's 1 before)
+                carry = 1;        // Carry continues to the next bit
+                cost++;           // Count the flip
+            }
+        }
+
+        // Print the updated binary number after incrementing and the cost
+        for (int j = size - 1; j >= 0; j--) {
+            cout << bits[j];
+        }
+        cout << " | Cost: " << cost << " flip" << (cost > 1 ? "s" : "") << endl;
+    }
+
+    return 0;
+}
