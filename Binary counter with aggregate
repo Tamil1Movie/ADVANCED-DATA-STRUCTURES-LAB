@@ -5,6 +5,7 @@ int main()
 	int size=4;
 	int bits[4]={0};
 	int cost=0;
+	cout<<"Binary"<<"  "<<"Cost"<<endl;
 	for(int i=0;i<8;i++){
 		int carry=1;
 	for(int j=0;j<size&& carry==1;j++)
@@ -26,20 +27,22 @@ int main()
 	{
 		cout<<bits[j];
 	}
-	cout<<"  "<<"Cost:"<<cost;
+	cout<<"    "<<"Cost:"<<cost;
 	cout<<endl;
 	}
 	cout<<"Amortized cost="<<cost;
 	return 0;
 }
 
+
 OUTPUT:
-0001  Cost:1
-0010  Cost:3
-0011  Cost:4
-0100  Cost:7
-0101  Cost:8
-0110  Cost:10
-0111  Cost:11
-1000  Cost:15
+Binary  Cost
+0001    Cost:1
+0010    Cost:3
+0011    Cost:4
+0100    Cost:7
+0101    Cost:8
+0110    Cost:10
+0111    Cost:11
+1000    Cost:15
 Amortized cost=15
