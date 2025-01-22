@@ -1,0 +1,75 @@
+#include<iostream>
+using namespace std;
+int main()
+{
+	int size=4;
+	int bits[4]={0};
+	int cost=0;
+	 int amortizedCost = 0;
+    int potentialBefore = 0, potentialAfter = 0;
+	cout<<"Binary"<<"  "<<"Acutal Cost"<<"  fi(Di)"<<" fi(Di-1)"<<" PotentialDifference"<<" Amortized cost"<<endl;
+	    for (int j = size - 1; j >= 0; j--) {
+        cout << bits[j];
+    }
+    cout << "    0 flips" << endl;
+	for(int i=0;i<8;i++){
+		int carry=1;
+		int cost=0;
+	for(int j=0;j<size,carry==1;j++)
+	{
+		if(bits[j]==0)
+		{
+			bits[j]=1;
+			carry=0;
+			cost++;
+		}
+		else
+		{
+			bits[j]=0;
+			carry=1;
+			cost++;
+		}
+	}
+	 potentialBefore = potentialAfter;
+	  potentialAfter = 0;
+        for (int j = 0; j < size; j++) {
+            if (bits[j] == 1) {
+                potentialAfter++;
+            }
+        }
+    int potentialDifference = potentialAfter - potentialBefore;
+        amortizedCost = cost + potentialDifference;
+	for(int j=size-1;j>=0;j--)
+	{
+		cout<<bits[j];
+	}
+	cout<<"    "<<cost<<" flips"
+             << "       " << potentialAfter
+             << "        " << potentialBefore
+             << "             " << potentialDifference
+             << "                " << amortizedCost
+             << endl;
+	cout<<endl;
+	}
+	return 0;
+}
+
+OUTPUT:
+
+Binary  Acutal Cost  fi(Di) fi(Di-1) PotentialDifference Amortized cost
+0000    0 flips
+0001    1 flips       1        0             1                2
+
+0010    2 flips       1        1             0                2
+
+0011    1 flips       2        1             1                2
+
+0100    3 flips       1        2             -1                2
+
+0101    1 flips       2        1             1                2
+
+0110    2 flips       2        2             0                2
+
+0111    1 flips       3        2             1                2
+
+1000    4 flips       1        3             -2                2
