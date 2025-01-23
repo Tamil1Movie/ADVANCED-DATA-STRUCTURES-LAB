@@ -2,20 +2,29 @@
 using namespace std;
 int main()
 {
-	int size=4;
+    int size;
+    int limit;
+    cout << "Enter number of bits and limit: ";
+    cin >> size >> limit;
 	int bits[4]={0};
 	int cost=0;
 	 int amortizedCost = 0;
     int potentialBefore = 0, potentialAfter = 0;
+    int potentialDifference=0;
 	cout<<"Binary"<<"  "<<"Acutal Cost"<<"  fi(Di)"<<" fi(Di-1)"<<" PotentialDifference"<<" Amortized cost"<<endl;
-	    for (int j = size - 1; j >= 0; j--) {
+	for (int j = size - 1; j >= 0; j--) 
+	{
         cout << bits[j];
     }
-    cout << "    0 flips" << endl;
-	for(int i=0;i<8;i++){
+    cout << "    0 flips" << "         "<<potentialBefore
+         << "        "<<potentialAfter
+         << "                "<<potentialDifference
+         << "                    " <<amortizedCost
+         << endl;
+	for(int i=0;i<limit;i++){
 		int carry=1;
 		int cost=0;
-	for(int j=0;j<size,carry==1;j++)
+	for(int j=0;j<size&&carry==1;j++)
 	{
 		if(bits[j]==0)
 		{
@@ -53,7 +62,6 @@ int main()
 	}
 	return 0;
 }
-
 OUTPUT:
 
 Binary  Acutal Cost  fi(Di) fi(Di-1) PotentialDifference Amortized cost
