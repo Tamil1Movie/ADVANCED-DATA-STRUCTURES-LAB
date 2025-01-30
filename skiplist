@@ -8,8 +8,8 @@ const int MAX_LEVEL = 4;
 
 class Node {
 public:
-    int value;   // Stores the value at the node
-    Node **forward;  // Array of pointers for levels
+    int value;   
+    Node **forward;  
 
     Node(int val, int level) {
         value = val;
@@ -22,7 +22,7 @@ public:
 
 class SkipList {
 private:
-    Node *header;   // Points to the start of the skip list
+    Node *header;  
     int currentLevel;
 
     int randomLevel() {
@@ -37,7 +37,7 @@ public:
     SkipList() {
         header = new Node(-1, MAX_LEVEL);
         currentLevel = 0;
-        srand(time(0));  // Initialize random seed
+        srand(time(0));  
     }
 
     void insert(int value) {
@@ -135,11 +135,7 @@ int main() {
         cin >> value;
         skipList.insert(value);
     }
-
-    // Display Skip List
     skipList.display();
-
-    // Search for elements
     int searchCount;
     cout << "\nEnter the number of elements to search: ";
     cin >> searchCount;
@@ -148,8 +144,6 @@ int main() {
         cin >> value;
         skipList.search(value);
     }
-
-    // Delete elements
     int deleteCount;
     cout << "\nEnter the number of elements to delete: ";
     cin >> deleteCount;
@@ -158,8 +152,6 @@ int main() {
         cin >> value;
         skipList.remove(value);
     }
-
-    // Display Final Skip List
     cout << "\nFinal Skip List after deletions:" << endl;
     skipList.display();
 
