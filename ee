@@ -1,0 +1,47 @@
+
+1. Insert
+2. Delete
+3. Display Tree
+4. Exit
+Enter choice: 1
+Enter value to insert: 10
+
+1. Insert
+2. Delete
+3. Display Tree
+4. Exit
+Enter choice: 1
+Enter value to insert: 18
+
+1. Insert
+2. Delete
+3. Display Tree
+4. Exit
+Enter choice: 1
+Enter value to insert: 7
+
+1. Insert
+2. Delete
+3. Display Tree
+4. Exit
+Enter choice: 2
+Enter value to delete: 7
+Deletion is not implemented yet. This is a placeholder to prevent segmentation faults.
+
+1. Insert
+2. Delete
+3. Display Tree
+4. Exit
+Enter choice: 3
+Red-Black Tree Structure:
+R----10(B)
+   L----7(R)
+   R----18(R)
+
+1. Insert
+2. Delete
+3. Display Tree
+4. Exit
+Enter choice: 2
+Enter value to delete: 10
+Deletion is not implemented yet. This is a placeholder to prevent segmentation faults.
