@@ -4,40 +4,42 @@ using namespace std;
 
 class BTreeNode {
     int *keys;
-    int t;
-    BTreeNode **C;
-    int n;
-    bool leaf;
+    int t;  // Minimum degree (defines the range for number of keys)
+    BTreeNode **C;  // Child pointers
+    int n;  // Current number of keys
+    bool leaf;  // True if node is a leaf, false otherwise
 
 public:
-    BTreeNode(int _t, bool _leaf);
-    void traverse();
-    void levelOrder();
-    BTreeNode *search(int k);
-    void insertNonFull(int k);
-    void splitChild(int i, BTreeNode *y);
-    void remove(int k);
-    void removeFromLeaf(int idx);
-    void removeFromNonLeaf(int idx);
-    int getPred(int idx);
-    int getSucc(int idx);
-    void fill(int idx);
-    void merge(int idx);
+    BTreeNode(int _t, bool _leaf);  // Constructor
+    void traverse();  // Traversal to print keys in the tree
+    void levelOrder();  // Level order traversal
+    BTreeNode *search(int k);  // Search for key in the tree
+    void insertNonFull(int k);  // Insert key in non-full node
+    void splitChild(int i, BTreeNode *y);  // Split a full child node
+    void remove(int k);  // Remove key from the tree
+    void removeFromLeaf(int idx);  // Remove key from a leaf node
+    void removeFromNonLeaf(int idx);  // Remove key from a non-leaf node
+    int getPred(int idx);  // Get predecessor of key
+    int getSucc(int idx);  // Get successor of key
+    void fill(int idx);  // Fill a node if it has less than t keys
+    void merge(int idx);  // Merge two nodes
+    void borrowFromLeft(int idx);  // Borrow key from left sibling
+    void borrowFromRight(int idx);  // Borrow key from right sibling
 
     friend class BTree;
 };
 
 class BTree {
     BTreeNode *root;
-    int t;
+    int t;  // Minimum degree
 
 public:
     BTree(int _t) { root = nullptr; t = _t; }
     void traverse() { if (root) root->traverse(); }
     void levelOrder() { if (root) root->levelOrder(); }
     BTreeNode *search(int k) { return (root) ? root->search(k) : nullptr; }
-    void insert(int k);
-    void remove(int k);
+    void insert(int k);  // Insert key in the B-tree
+    void remove(int k);  // Remove key from the B-tree
 };
 
 BTreeNode::BTreeNode(int _t, bool _leaf) {
@@ -199,9 +201,11 @@ int BTreeNode::getSucc(int idx) {
 }
 
 void BTreeNode::fill(int idx) {
-    if (idx != 0 && C[idx - 1]->n >= t) C[idx - 1]->n--;
-    else if (idx != n && C[idx + 1]->n >= t) C[idx + 1]->n--;
-    else {
+    if (idx != 0 && C[idx - 1]->n >= t) {
+        borrowFromLeft(idx);
+    } else if (idx != n && C[idx + 1]->n >= t) {
+        borrowFromRight(idx);
+    } else {
         if (idx != n) merge(idx);
         else merge(idx - 1);
     }
@@ -210,11 +214,56 @@ void BTreeNode::fill(int idx) {
 void BTreeNode::merge(int idx) {
     BTreeNode *child = C[idx];
     BTreeNode *sibling = C[idx + 1];
+
     child->keys[t - 1] = keys[idx];
     for (int i = 0; i < sibling->n; i++) child->keys[i + t] = sibling->keys[i];
     for (int i = 0; i <= sibling->n; i++) child->C[i + t] = sibling->C[i];
+
     child->n += sibling->n + 1;
+
+    for (int i = idx + 1; i < n; i++) keys[i - 1] = keys[i];
+    for (int i = idx + 2; i <= n; i++) C[i - 1] = C[i];
+
+    n--;
+
     delete sibling;
+}
+
+void BTreeNode::borrowFromLeft(int idx) {
+    BTreeNode *child = C[idx];
+    BTreeNode *sibling = C[idx - 1];
+
+    for (int i = child->n - 1; i >= 0; i--) child->keys[i + 1] = child->keys[i];
+    if (!child->leaf) {
+        for (int i = child->n; i >= 0; i--) child->C[i + 1] = child->C[i];
+    }
+
+    child->keys[0] = keys[idx - 1];
+
+    if (!child->leaf) child->C[0] = sibling->C[sibling->n];
+
+    keys[idx - 1] = sibling->keys[sibling->n - 1];
+    child->n++;
+    sibling->n--;
+}
+
+void BTreeNode::borrowFromRight(int idx) {
+    BTreeNode *child = C[idx];
+    BTreeNode *sibling = C[idx + 1];
+
+    child->keys[child->n] = keys[idx];
+
+    if (!child->leaf) child->C[child->n + 1] = sibling->C[0];
+
+    keys[idx] = sibling->keys[0];
+
+    for (int i = 1; i < sibling->n; i++) sibling->keys[i - 1] = sibling->keys[i];
+    if (!sibling->leaf) {
+        for (int i = 1; i <= sibling->n; i++) sibling->C[i - 1] = sibling->C[i];
+    }
+
+    child->n++;
+    sibling->n--;
 }
 
 int main() {
@@ -224,11 +273,11 @@ int main() {
     int t = (m + 1) / 2;
 
     BTree tree(t);
-    
+
     while (true) {
         cout << "\nMenu:\n1. Insert\n2. Delete\n3. Level Order Traversal\n4. Exit\nEnter choice: ";
         cin >> choice;
-        
+
         if (choice == 1) {
             cout << "Enter key to insert: ";
             cin >> key;
