@@ -1,0 +1,215 @@
+#include <iostream>
+#include <queue>
+using namespace std;
+
+// Structure for Leftist Tree Node
+struct LeftistNode {
+    int data;
+    int npl; // Null path length
+    LeftistNode* left;
+    LeftistNode* right;
+
+    LeftistNode(int value) {
+        data = value;
+        npl = 0;
+        left = right = nullptr;
+    }
+};
+
+// Leftist Tree Class
+class LeftistTree {
+private:
+    LeftistNode* root;
+
+    // Merge two Leftist Trees
+    LeftistNode* merge(LeftistNode* t1, LeftistNode* t2) {
+        if (!t1) return t2;
+        if (!t2) return t1;
+
+        if (t1->data > t2->data) {
+            swap(t1, t2); // Ensure that t1 always has the smaller root
+        }
+
+        // Merge right subtree
+        t1->right = merge(t1->right, t2);
+
+        // Ensure the leftist property
+        if (!t1->left || t1->left->npl < t1->right->npl) {
+            swap(t1->left, t1->right);
+        }
+
+        // Update the null path length
+        if (!t1->right) {
+            t1->npl = 0;
+        } else {
+            t1->npl = t1->right->npl + 1;
+        }
+
+        return t1;
+    }
+
+    // Helper function to print the tree (Inorder Traversal)
+    void inorder(LeftistNode* node) {
+        if (node == nullptr) return;
+        inorder(node->left);
+        cout << node->data << " ";
+        inorder(node->right);
+    }
+
+    // Helper function for Level Order Traversal (Tree Structure)
+    void levelOrder(LeftistNode* node) {
+        if (!node) return;
+
+        queue<LeftistNode*> q;
+        q.push(node);
+
+        while (!q.empty()) {
+            int size = q.size();
+            cout << "[";
+            while (size--) {
+                LeftistNode* current = q.front();
+                q.pop();
+                cout << current->data;
+                if (size > 0) cout << " ";  // Add space between nodes at the same level
+
+                if (current->left) q.push(current->left);
+                if (current->right) q.push(current->right);
+            }
+            cout << "] ";  // Close the bracket for this level
+        }
+        cout << endl;
+    }
+
+    // Delete a node (extract the minimum element)
+    LeftistNode* deleteMin(LeftistNode* root) {
+        if (!root) return nullptr;
+        
+        LeftistNode* left = root->left;
+        LeftistNode* right = root->right;
+        delete root; // Delete the root (which is the minimum)
+
+        // Merge left and right children to form a new tree
+        return merge(left, right);
+    }
+
+public:
+    LeftistTree() {
+        root = nullptr;
+    }
+
+    // Insert element into the Leftist Tree
+    void insert(int value) {
+        LeftistNode* newNode = new LeftistNode(value);
+        root = merge(root, newNode);
+    }
+
+    // Merge two trees
+    void mergeTrees(LeftistTree& other) {
+        root = merge(root, other.root);
+        other.root = nullptr;  // Clear the other tree
+    }
+
+    // Delete the minimum element (root)
+    void deleteMin() {
+        if (root) {
+            root = deleteMin(root);
+            cout << "Minimum element deleted successfully.\n";
+        } else {
+            cout << "Tree is empty, nothing to delete.\n";
+        }
+    }
+
+    // Print the tree using inorder traversal
+    void inorder() {
+        inorder(root);
+        cout << endl;
+    }
+
+    // Print the tree using level-order traversal (Tree Structure)
+    void levelOrder() {
+        levelOrder(root);
+    }
+
+    // Print the merged tree (in a level-order manner showing tree structure)
+    void printMergedTree() {
+        if (root) {
+            cout << "Merged Tree (Level Order): ";
+            levelOrder();
+        } else {
+            cout << "Merged Tree is empty.\n";
+        }
+    }
+
+    // Get root of the tree
+    LeftistNode* getRoot() {
+        return root;
+    }
+};
+
+int main() {
+    LeftistTree tree1, tree2;
+    int choice, value;
+     cout << "\nMenu:\n";
+        cout << "1. Insert element into Tree 1\n";
+        cout << "2. Insert element into Tree 2\n";
+        cout << "3. Merge Tree 1 and Tree 2\n";
+        cout << "4. Delete minimum element from Tree 1\n";
+        cout << "5. Print Tree 1 (Inorder)\n";
+        cout << "6. Print Tree 1 (Level Order)\n";
+        cout << "7. Print Tree 2 (Inorder)\n";
+        cout << "8. Print Tree 2 (Level Order)\n";
+        cout << "9. Print Merged Tree\n";
+        cout << "10. Exit\n";
+
+    while (true) {
+
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter value to insert into Tree 1: ";
+                cin >> value;
+                tree1.insert(value);
+                break;
+            case 2:
+                cout << "Enter value to insert into Tree 2: ";
+                cin >> value;
+                tree2.insert(value);
+                break;
+            case 3:
+                tree1.mergeTrees(tree2);
+                cout << "Trees merged successfully.\n";
+                break;
+            case 4:
+                tree1.deleteMin();
+                break;
+            case 5:
+                cout << "Tree 1 (Inorder): ";
+                tree1.inorder();
+                break;
+            case 6:
+                cout << "Tree 1 (Level Order): ";
+                tree1.levelOrder();
+                break;
+            case 7:
+                cout << "Tree 2 (Inorder): ";
+                tree2.inorder();
+                break;
+            case 8:
+                cout << "Tree 2 (Level Order): ";
+                tree2.levelOrder();
+                break;
+            case 9:
+                cout << "Displaying Merged Tree:\n";
+                tree1.printMergedTree();
+                break;
+            case 10:
+                return 0;
+            default:
+                cout << "Invalid choice! Please try again.\n";
+        }
+    }
+
+    return 0;
+}
