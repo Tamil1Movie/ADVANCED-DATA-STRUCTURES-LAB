@@ -1,7 +1,6 @@
-#include <bits/stdc++.h>
+#include <iostream>
 using namespace std;
 
-// Treap Node structure
 struct Node {
     int key, priority;
     Node *left, *right;
@@ -9,7 +8,7 @@ struct Node {
     Node(int k, int p) : key(k), priority(p), left(nullptr), right(nullptr) {}
 };
 
-// Right rotation
+
 Node* rightRotate(Node* y) {
     Node* x = y->left;
     Node* T2 = x->right;
@@ -18,7 +17,6 @@ Node* rightRotate(Node* y) {
     return x;
 }
 
-// Left rotation
 Node* leftRotate(Node* x) {
     Node* y = x->right;
     Node* T2 = y->left;
@@ -27,7 +25,7 @@ Node* leftRotate(Node* x) {
     return y;
 }
 
-// Insert function
+
 Node* insert(Node* root, int key, int priority) {
     if (!root) return new Node(key, priority);
 
@@ -44,7 +42,7 @@ Node* insert(Node* root, int key, int priority) {
     return root;
 }
 
-// Delete function
+
 Node* deleteNode(Node* root, int key) {
     if (!root) return root;
 
@@ -75,7 +73,7 @@ Node* deleteNode(Node* root, int key) {
     return root;
 }
 
-// Inorder traversal (sorted order)
+
 void inorder(Node* root) {
     if (root) {
         inorder(root->left);
@@ -84,7 +82,6 @@ void inorder(Node* root) {
     }
 }
 
-// Menu-driven function
 int main() {
     Node* root = nullptr;
     int choice, key, priority;
