@@ -1,0 +1,114 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+class DisjointSet {
+private:
+    vector<int> parent, rank;
+
+public:
+    // Constructor to initialize n elements
+    DisjointSet(int n) {
+        parent.resize(n);
+        rank.resize(n, 0);
+        for (int i = 0; i < n; i++) {
+            parent[i] = i; // Each element is its own parent
+        }
+    }
+
+    // Find operation with path compression
+    int find(int x) {
+        if (parent[x] != x) {
+            parent[x] = find(parent[x]); // Path compression
+        }
+        return parent[x];
+    }
+
+    // Union operation by rank
+    void unionSets(int x, int y) {
+        int rootX = find(x);
+        int rootY = find(y);
+
+        if (rootX != rootY) {
+            if (rank[rootX] > rank[rootY]) {
+                parent[rootY] = rootX;
+            } else if (rank[rootX] < rank[rootY]) {
+                parent[rootX] = rootY;
+            } else {
+                parent[rootY] = rootX;
+                rank[rootX]++;
+            }
+            cout << "Union done: " << x << " and " << y << " are now in the same set.\n";
+        } else {
+            cout << x << " and " << y << " are already in the same set.\n";
+        }
+    }
+
+    // Check if two elements belong to the same set
+    void checkConnected(int x, int y) {
+        if (find(x) == find(y)) {
+            cout << x << " and " << y << " are in the same set.\n";
+        } else {
+            cout << x << " and " << y << " are in different sets.\n";
+        }
+    }
+
+    // Find the representative (root) of a set
+    void findSet(int x) {
+        cout << "The representative (root) of element " << x << " is: " << find(x) << endl;
+    }
+};
+
+int main() {
+    int n, choice, x, y;
+
+    cout << "Enter the number of elements: ";
+    cin >> n;
+
+    DisjointSet ds(n);
+
+    while (true) {
+        cout << "\nChoose an operation:\n";
+        cout << "1. Union\n2. Find Representative (Root)\n3. Check if Connected\n4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter two elements to union: ";
+                cin >> x >> y;
+                if (x >= 0 && x < n && y >= 0 && y < n) {
+                    ds.unionSets(x, y);
+                } else {
+                    cout << "Invalid elements. Please enter values between 0 and " << n - 1 << ".\n";
+                }
+                break;
+            case 2:
+                cout << "Enter an element to find its representative: ";
+                cin >> x;
+                if (x >= 0 && x < n) {
+                    ds.findSet(x);
+                } else {
+                    cout << "Invalid element. Please enter a value between 0 and " << n - 1 << ".\n";
+                }
+                break;
+            case 3:
+                cout << "Enter two elements to check if they are connected: ";
+                cin >> x >> y;
+                if (x >= 0 && x < n && y >= 0 && y < n) {
+                    ds.checkConnected(x, y);
+                } else {
+                    cout << "Invalid elements. Please enter values between 0 and " << n - 1 << ".\n";
+                }
+                break;
+            case 4:
+                cout << "Exiting...\n";
+                return 0;
+            default:
+                cout << "Invalid choice! Try again.\n";
+        }
+    }
+
+    return 0;
+}
