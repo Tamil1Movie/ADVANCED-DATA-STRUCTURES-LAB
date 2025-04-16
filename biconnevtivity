@@ -1,0 +1,79 @@
+#include <iostream>
+#include <vector>
+#include <stack>
+#include <algorithm>
+using namespace std;
+
+const int MAX = 10001;
+vector<int> adj[MAX];
+int disc[MAX], low[MAX], timeCounter;
+bool visited[MAX];
+stack<pair<int, int>> edgeStack;
+
+void dfs(int u, int parent) {
+    visited[u] = true;
+    disc[u] = low[u] = ++timeCounter;
+    int children = 0;
+
+    for (int v : adj[u]) {
+        if (!visited[v]) {
+            children++;
+            edgeStack.push({u, v});
+            dfs(v, u);
+
+            low[u] = min(low[u], low[v]);
+
+            if ((parent == -1 && children > 1) || (parent != -1 && low[v] >= disc[u])) {
+                cout << "Biconnected component: ";
+                pair<int, int> e;
+                do {
+                    e = edgeStack.top(); edgeStack.pop();
+                    cout << "(" << e.first << "," << e.second << ") ";
+                } while (e.first != u || e.second != v);
+                cout << endl;
+            }
+        }
+        else if (v != parent && disc[v] < disc[u]) {
+            edgeStack.push({u, v});
+            low[u] = min(low[u], disc[v]);
+        }
+    }
+}
+
+void findBiconnectedComponents(int V) {
+    timeCounter = 0;
+    fill(visited, visited + V, false);
+    fill(disc, disc + V, -1);
+    fill(low, low + V, -1);
+
+    for (int i = 0; i < V; i++) {
+        if (!visited[i]) {
+            dfs(i, -1);
+            if (!edgeStack.empty()) {
+                cout << "Biconnected component: ";
+                while (!edgeStack.empty()) {
+                    auto e = edgeStack.top(); edgeStack.pop();
+                    cout << "(" << e.first << "," << e.second << ") ";
+                }
+                cout << endl;
+            }
+        }
+    }
+}
+
+int main() {
+    int V, E;
+    cout << "Enter number of vertices and edges: ";
+    cin >> V >> E;
+
+    cout << "Enter edges (u v):" << endl;
+    for (int i = 0; i < E; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u); // Undirected graph
+    }
+
+    findBiconnectedComponents(V);
+    return 0;
+}
